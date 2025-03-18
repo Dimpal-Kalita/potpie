@@ -312,20 +312,7 @@ class ProviderService:
         params = self._build_llm_params(provider, size)
         routing_provider = params.pop("routing_provider", None)
         await check_and_wait_for_cooldown()
-
-        extra_params = {}
-        if self.portkey_api_key and routing_provider != "ollama":
-            # ollama + portkey is not supported currently
-            extra_params["base_url"] = PORTKEY_GATEWAY_URL
-            extra_params["extra_headers"] = createHeaders(
-                api_key=self.portkey_api_key,
-                provider=routing_provider,
-                custom_host=os.environ.get("LLM_API_BASE"),
-                api_version=os.environ.get("LLM_API_VERSION"),
-            )
-        elif provider == "azure":
-            extra_params["api_base"] = os.environ.get("LLM_API_BASE")
-            extra_params["api_version"] = os.environ.get("LLM_API_VERSION")
+        extra_params, _ = self._get_extra_params_and_headers(routing_provider)
 
         try:
             if stream:
@@ -372,22 +359,8 @@ class ProviderService:
         provider = self._get_provider_config(size)
         params = self._build_llm_params(provider, size)
         routing_provider = params.pop("routing_provider", None)
-
         await check_and_wait_for_cooldown()
-
-        extra_params = {}
-        if self.portkey_api_key and routing_provider != "ollama":
-            # ollama + portkey is not supported currently
-            extra_params["base_url"] = PORTKEY_GATEWAY_URL
-            extra_params["extra_headers"] = createHeaders(
-                api_key=self.portkey_api_key,
-                provider=routing_provider,
-                custom_host=os.environ.get("LLM_API_BASE"),
-                api_version=os.environ.get("LLM_API_VERSION"),
-            )
-        elif provider == "azure":
-            extra_params["api_base"] = os.environ.get("LLM_API_BASE")
-            extra_params["api_version"] = os.environ.get("LLM_API_VERSION")
+        extra_params, _ = self._get_extra_params_and_headers(routing_provider)
 
         try:
             if provider == "ollama":
