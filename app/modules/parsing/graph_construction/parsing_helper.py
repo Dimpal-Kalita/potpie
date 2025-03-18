@@ -134,7 +134,12 @@ class ParseHelper:
             "md",
             "mdx",
             "xsq",
+            "proto",
+            "sql",
         ]
+        if ext == "go":
+            if file_path.endswith(".pb.go"):
+                return False
         if ext in exclude_extensions:
             return False
         elif ext in include_extensions or open_text_file(file_path):
