@@ -15,6 +15,7 @@ from portkey_ai import createHeaders, PORTKEY_GATEWAY_URL
 from app.modules.key_management.secret_manager import SecretManager
 from app.modules.users.user_preferences_model import UserPreferences
 from app.modules.utils.posthog_helper import PostHogClient
+from app.modules.utils.Cooldown_helper import check_and_wait_for_cooldown
 
 from .provider_schema import ProviderInfo, GetProviderResponse
 
@@ -310,6 +311,8 @@ class ProviderService:
         provider = self._get_provider_config(size)
         params = self._build_llm_params(provider, size)
         routing_provider = params.pop("routing_provider", None)
+        await check_and_wait_for_cooldown()
+
         extra_params = {}
         if self.portkey_api_key and routing_provider != "ollama":
             # ollama + portkey is not supported currently
@@ -370,6 +373,8 @@ class ProviderService:
         params = self._build_llm_params(provider, size)
         routing_provider = params.pop("routing_provider", None)
 
+        await check_and_wait_for_cooldown()
+
         extra_params = {}
         if self.portkey_api_key and routing_provider != "ollama":
             # ollama + portkey is not supported currently
@@ -423,6 +428,7 @@ class ProviderService:
         """
         params = self._build_llm_params(provider, size)
         routing_provider = params.pop("routing_provider", None)
+
         headers = createHeaders(
             api_key=self.portkey_api_key,
             provider=routing_provider,
