@@ -11,9 +11,6 @@ last_api_call_timestamp: Optional[float] = None
 async def check_and_wait_for_cooldown() -> None:
     """
     Check if we need to wait before making another API call.
-
-    Args:
-        provider: The provider being used for the API call
     """
     global last_api_call_timestamp, API_COOLDOWN_SECONDS
 

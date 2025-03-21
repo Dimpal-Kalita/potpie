@@ -301,7 +301,7 @@ class ProviderService:
 
         return params
 
-    def _get_extra_params_and_headers(self, routing_provider: Optional[str]) -> Dict[str, Any]:
+    def _get_extra_params_and_headers(self, routing_provider: Optional[str]) -> tuple[dict[str, str | None | Any], Any]:
         extra_params = {}
         headers = createHeaders(
             api_key=self.portkey_api_key,
