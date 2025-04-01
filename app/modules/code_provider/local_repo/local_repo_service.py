@@ -88,7 +88,7 @@ class LocalRepoService:
         try:
             repo = self.get_repo(repo_path)
             structure = await self._fetch_repo_structure_async(
-                repo, repo_path or "", current_depth=0, base_path=path
+                repo, repo_path or "", current_depth=0, base_path=repo_path
             )
             formatted_structure = self._format_tree_structure(structure)
             return formatted_structure

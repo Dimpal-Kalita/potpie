@@ -10,7 +10,7 @@ from pydantic_ai.models import Model
 from litellm import litellm, AsyncOpenAI, acompletion
 import instructor
 import httpx
-from portkey_ai import createHeaders, PORTKEY_GATEWAY_URL
+from portkey_ai import createHeaders
 
 from app.modules.key_management.secret_manager import SecretManager
 from app.modules.users.user_preferences_model import UserPreferences
@@ -23,6 +23,7 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
+PORTKEY_GATEWAY_URL= "http://localhost:8787/v1"
 
 class AgentProvider(Enum):
     CREWAI = "CREWAI"
@@ -304,10 +305,10 @@ class ProviderService:
     def _get_extra_params_and_headers(self, routing_provider: Optional[str]) -> tuple[dict[str, str | None | Any], Any]:
         extra_params = {}
         headers = createHeaders(
-            api_key=self.portkey_api_key,
-            provider=routing_provider,
+            api_key= os.environ.get("LLM_API_KEY"),
+            provider= "azure-openai",
             trace_id=str(uuid.uuid4())[:8],
-            custom_host=os.environ.get("LLM_API_KEY"),
+            custom_host=os.environ.get("LLM_API_BASE"),
             api_version=os.environ.get("LLM_API_VERSION"),
         )
         if self.portkey_api_key and routing_provider != "ollama":
@@ -535,6 +536,23 @@ class ProviderService:
                                 trace_id=str(uuid.uuid4())[:8],
                             ),
                         ),
+                    )
+                case "azure":
+                    return OpenAIModel(
+                        model_name=model,
+                        provider=OpenAIProvider(
+                            api_key=api_key,
+                            base_url=PORTKEY_GATEWAY_URL,
+                            http_client=httpx.AsyncClient(
+                                headers=createHeaders(
+                                    api_key=self.portkey_api_key,
+                                    provider=routing_provider,
+                                    custom_host=os.environ.get("LLM_API_BASE"),
+                                    api_version=os.environ.get("LLM_API_VERSION"),
+                                    trace_id=str(uuid.uuid4())[:8],
+                                ),
+                            ),
+                        )
                     )
                 # case "deepseek":
                 #     model_name: str = params["model"]

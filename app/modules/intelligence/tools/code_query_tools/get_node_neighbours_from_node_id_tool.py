@@ -123,6 +123,6 @@ def get_node_neighbours_from_node_id_tool(sql_db: Session) -> StructuredTool:
         coroutine=tool_instance.arun,
         func=tool_instance.run,
         name="Get Node Neighbours From Node ID",
-        description="Retrieves inbound and outbound neighbors of a specific node in a repository given its node ID. This is helpful to find which functions are called by a specific function and which functions are calling the specific function. Works best with Pythoon, JS and TS code.",
+        description="Retrieves inbound and outbound neighbors of a specific node in a repository given its node ID. This is helpful to find which functions are called by a specific function and which functions are calling the specific function. Works best with Python, JS and TS code.",
         args_schema=GetNodeNeighboursInput,
     )

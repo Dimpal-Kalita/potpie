@@ -1,4 +1,5 @@
 import json
+import time
 from typing import Any, List, AsyncGenerator
 
 from app.modules.intelligence.provider.provider_service import (
@@ -170,6 +171,12 @@ class CrewAIAgent(ChatAgent):
             result = await crew.kickoff_async()
             response: CrewAIResponse = result.tasks_output[0].pydantic
             # agentops.end_session("success")
+            cntfailure=cntsuccess=0
+            if response is None:
+                cntfailure+=1
+            else:
+                cntsuccess+=1
+            print(f"cnt: {cntfailure}, cntsuccess: {cntsuccess}")
             return ChatAgentResponse(
                 response=response.response,
                 tool_calls=[],

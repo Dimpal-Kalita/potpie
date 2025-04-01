@@ -228,3 +228,11 @@ async def remove_access(
         return {"message": "Access removed successfully"}
     except ShareChatServiceError as e:
         raise HTTPException(status_code=400, detail=str(e))
+@router.get("/subscriptions/info")
+def get_subscription_info(user_id: str):
+    return {
+        "plan_type": "pro",
+        "end_date": "2065-12-01T18:30:00.000Z",
+        "is_active": True,
+        "is_cancelled": False
+    }

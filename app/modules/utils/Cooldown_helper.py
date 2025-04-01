@@ -4,7 +4,7 @@ import logging
 from typing import Optional
 
 # Global variables for rate limiting api API calls
-API_COOLDOWN_SECONDS = 20.0
+API_COOLDOWN_SECONDS = 0.0
 last_api_call_timestamp: Optional[float] = None
 
 
